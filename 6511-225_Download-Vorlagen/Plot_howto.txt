@@ -1,0 +1,11 @@
+Das Skript "Plot.py" dient dazu, die Verkehrssimulation zu visualisieren. 
+
+Der Aufruf von "Plot.py" erfordert genau einen Parameter: den absoluten Pfad des Verzeichnisses, in dem alle Dateien des Testfalls liegen. Jeder Testfall sollte in einem eigenen Verzeichnis liegen. Darin liegt ein Unterverzeichnis "plots", in dem die PNG-Plots gespeichert werden. Existiert "plots" nicht, wird es angelegt. 
+
+Die Visualisierung zeigt alle Zeitschritte mit Überschrift an. Am Ende die Simulation beginnt sie automatisch von vorne. Der erste Durchgang ist langsamer, weil die PNG-Bilder erzeugt werden. 
+
+Im Skript gibt es folgende zwei Parameter, mit der die Visualisierung den eigenen Wünschen angepasst werden kann:
+1. "REL_LANE_OFFSET" legt fest, wie weit die Fahrbahnen neben der Fahrbahnmitte liegen. Die Angabe erfolgt relativ bezogen auf das Minimum der Breite und Höhe des Bildausschnitts. 
+2. "PLOT_INTERVALL" legt die Wartezeit zwischen den Zeitschritten beim Plot und damit die Geschwindigkeit der Visualisierung fest.
+
+„Plot.py“ wurde in der Python-Version 3.10 mit dem Package „matplotlib“ in der Version 3.8.4 und dem package "numpy" in der Version 1.26.4 getestet.
