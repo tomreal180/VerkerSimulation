@@ -86,7 +86,7 @@ class DataOut:
         def create_Plan(self,netze : Netze):
             file = os.path.join(self.filepath,"plan.txt")
             Strassen = netze.get_alle_Strassen()
-            with open(file, "a") as f:
+            with open(file, "w") as f:
                 for i,strasse in enumerate(Strassen):
                     if i== len(Strassen)-1:
                         f.write(strasse.get_Point())
@@ -95,7 +95,7 @@ class DataOut:
         
         def create_Statistik(self, netze : Netze):
             file = os.path.join(self.filepath,"Statistik.txt")
-            with open(file ,"a") as f:
+            with open(file ,"w") as f:
                 Strassen = netze.get_alle_Strassen()
                 f.write("Gesamtanzahl Fahrzeuge pro 100m:\n")
                 for strasse in Strassen:

@@ -29,12 +29,6 @@ class Punkt:
         erg[1] = punkt.get_Y()-self.y
         return erg
     
-    def set_X(self, newX):
-        self.x = newX;
-
-    def set_Y(self, newY):
-        self.y = newY
-
     def __str__(self):
         return f"({self.x}, {self.y})"
 
@@ -70,8 +64,8 @@ class Kreuzung(Punkt):
     def get_Strassen(self):
         return self.Strassen
     
-    def add_Strassen(self,strass):
-        self.Strassen.append(strass)
+    def add_Strassen(self,strasse):
+        self.Strassen.append(strasse)
 
     def get_Ziele(self):
         return self.Ziele
@@ -95,7 +89,7 @@ class Kreuzung(Punkt):
             if(wahl<tempCheck[j]):
                 return tempWahl[j]
         
-        return tempWahl[0]
+        raise Exception("kann nicht neue Straße wählen")
     
 
     def __str__(self):
@@ -139,10 +133,10 @@ class Fahrzeug:
         einheit = [Abstand*vektor[0]/lange, Abstand*vektor[1]/lange ]   
         return einheit
     
-    def berechnen_Point(self,anfang: Punkt, vektor, lange, alpha):
-        alpha1 = self.berechnen_alpha(vektor,lange, self.Geschwindigkeit-alpha)
-        new_x = anfang.get_X() + alpha1[0]
-        new_y = anfang.get_Y() + alpha1[1]
+    def berechnen_Point(self,anfang: Punkt, vektor, lange, rest):
+        alpha = self.berechnen_alpha(vektor,lange, self.Geschwindigkeit-rest)
+        new_x = anfang.get_X() + alpha[0]
+        new_y = anfang.get_Y() + alpha[1]
         self.Position = Punkt(new_x,new_y) 
 
     def __str__(self):
@@ -154,7 +148,7 @@ class Strasse:
        self.Anfang = Anfang
        self.Ziel = Ziel
        self.Vektor = Anfang.berechnen_Vektor(Ziel)
-       self.Länge =  Anfang.get_Abstand(Ziel)
+       self.Length =  Anfang.get_Abstand(Ziel)
        self.Fahrzeugen = []
        self.Max = 0
        self.Gesamt = 0
@@ -166,7 +160,7 @@ class Strasse:
         return self.Fahrzeugen
     
     def get_Length(self):
-        return self.Länge
+        return self.Length
     
     def get_Vektor(self):
         return self.Vektor
@@ -182,9 +176,8 @@ class Strasse:
     
     def check_Fahrzeug(self):
         for i, fahrzeug in enumerate(self.Fahrzeugen):
-            nextPosition = fahrzeug.berechnen_next_Point(self.Vektor, self.Länge)
+            nextPosition = fahrzeug.berechnen_next_Point(self.Vektor, self.Length)
             vectorMitZiel = self.Ziel.berechnen_Vektor(nextPosition)
-            längevonFahrzeugbisZiel = fahrzeug.get_Position().get_Abstand(self.Ziel)
             check = [self.Vektor[0]*vectorMitZiel[0], self.Vektor[1]*vectorMitZiel[1]]
             if not(check[0] >= -1e-9 and check[1]>= -1e-9):
                 fahrzeug.set_new_Point(nextPosition)
@@ -194,21 +187,21 @@ class Strasse:
                     tempZiel = ziel
                     anfangName = self.Anfang.get_Name()
                     nextStrasse = tempZiel.waehlen_naechsten_Ziel(anfangName)
-                    
-                    fahrzeug.berechnen_Point(nextStrasse.get_Anfang(), nextStrasse.get_Vektor(),nextStrasse.get_Length() ,längevonFahrzeugbisZiel)
+                    LengthvonFahrzeugbisZiel = fahrzeug.get_Position().get_Abstand(self.Ziel)
+                    fahrzeug.berechnen_Point(nextStrasse.get_Anfang(), nextStrasse.get_Vektor(),nextStrasse.get_Length() ,LengthvonFahrzeugbisZiel)
                     nextStrasse.add_Fahrzeug(fahrzeug)
                 
                 self.Fahrzeugen.pop(i)
 
-    def print_Fahrzeugen(self):
-        str = ""
-        for fahrzeug in self.Fahrzeugen:
-            str+= f", {fahrzeug.__str__()}"
-        print(f"{self} : {str}")
+    # def print_Fahrzeugen(self):
+    #     str = ""
+    #     for fahrzeug in self.Fahrzeugen:
+    #         str+= f", {fahrzeug.__str__()}"
+    #     print(f"{self} : {str}")
         
 
     def get_Statistik(self):
-        return (self.Gesamt, self.Max, self.Länge)
+        return (self.Gesamt, self.Max, self.Length)
 
     def get_Point(self):
         return f"{round(self.Anfang.get_X(),1)} {round(self.Anfang.get_Y(),1)} {round(self.Ziel.get_X(),1)} {round(self.Ziel.get_Y(),1)}"
@@ -221,7 +214,7 @@ class Netze:
     def __init__(self, Einfallspunkte, Kreuzugen):
         self.Einfallspunkte = Einfallspunkte
         self.Kreuzungen = Kreuzugen
-        self.n = 0
+        self.Zahl = 0
         self.finden_Strassen()
 
     
@@ -266,9 +259,9 @@ class Netze:
             s.check_Fahrzeug()
             Takt = ep.get_Takt()
             if (ZeitPunkt != 0) and (ZeitPunkt % Takt == 0):
-                newCar = Fahrzeug(ep,self.n)
+                newCar = Fahrzeug(ep,self.Zahl)
                 s.add_Fahrzeug(newCar)
-                self.n += 1
+                self.Zahl += 1
             
             # #test
             # s.print_Fahrzeugen()
