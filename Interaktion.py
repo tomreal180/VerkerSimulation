@@ -4,9 +4,9 @@ from Logik import Kreuzung, Netze
 from Logik import EinfallsPunkt
 
 class DataIn:
-    def __init__(self, datei):
-        file_path = os.path.join("in", datei)
-        self.in_file = file_path
+    def __init__(self, datei, filepath):
+        self.Filepath = filepath
+        self.Datei = os.path.join(self.Filepath, datei)
         self.titel = None
         self.zeitraum = [None, None]
         self.einfallspunkte = []
@@ -15,7 +15,7 @@ class DataIn:
 
     def parse_file(self):
         try:
-            with open(self.in_file, 'r') as f:
+            with open(self.Datei, 'r') as f:
                 # Titel
                 zeile1 = f.readline().strip()
                 if zeile1.startswith("#"):
@@ -80,13 +80,11 @@ class DataIn:
 
 
 class DataOut:
-        def __init__(self, datei):
-            name = datei.split(".")[0]
-            file_path = os.path.join("out", name)
-            self.adress = file_path
+        def __init__(self, filepath):
+            self.filepath = filepath
         
         def create_Plan(self,netze : Netze):
-            file = os.path.join("out","plan.txt")
+            file = os.path.join(self.filepath,"plan.txt")
             Strassen = netze.get_alle_Strassen()
             with open(file, "a") as f:
                 for i,strasse in enumerate(Strassen):
@@ -96,23 +94,23 @@ class DataOut:
                         f.write(strasse.get_Point()+"\n")
         
         def create_Statistik(self, netze : Netze):
-            file = os.path.join("out","Statistik.txt")
+            file = os.path.join(self.filepath,"Statistik.txt")
             with open(file ,"a") as f:
                 Strassen = netze.get_alle_Strassen()
                 f.write("Gesamtanzahl Fahrzeuge pro 100m:\n")
                 for strasse in Strassen:
                     statistik = strasse.get_Statistik()
-                    f.write(f"{strasse}: {round(statistik[0]*statistik[2],1)}\n")
+                    f.write(f"{strasse}: {round(statistik[0]/statistik[2],1)}\n")
                 f.write("Maximale Anzahl Fahrzeuge pro 100m:\n")
                 for i,strasse in enumerate(Strassen):
                     statistik = strasse.get_Statistik()
                     if i== len(Strassen)-1:
-                        f.write(f"{strasse}: {round(statistik[1]*statistik[2],1)}")
+                        f.write(f"{strasse}: {round(statistik[1]/statistik[2],1)}")
                     else:
-                        f.write(f"{strasse}: {round(statistik[1]*statistik[2],1)}\n")
+                        f.write(f"{strasse}: {round(statistik[1]/statistik[2],1)}\n")
         
         def write_Process(self, netze: Netze, ZeitPunkt: int):
-            file = os.path.join("out","Fahrzeuge.txt")
+            file = os.path.join(self.filepath,"Fahrzeuge.txt")
             with open(file, "a") as f:
                 Strassen = netze.get_alle_Strassen()
                 f.write(f"*** t = {ZeitPunkt}\n")

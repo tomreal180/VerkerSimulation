@@ -1,10 +1,12 @@
+import os
 from Interaktion import DataIn, DataOut
 from Logik import Netze
 
 class ProgrammSteuerung:
-    def __init__(self,datei):
-        self.Datain = DataIn(datei)
-        self.Dataout = DataOut(datei)
+    def __init__(self,datei, filepath):
+        self.filepath = filepath
+        self.Datain = DataIn(datei,filepath)
+        self.Dataout = DataOut(filepath)
         self.netze = Netze(self.Datain.get_einfallspunkte(),self.Datain.get_kreuzungen())
         self.Dataout.create_Plan(self.netze)
         
@@ -16,5 +18,7 @@ class ProgrammSteuerung:
             
         
         self.Dataout.create_Statistik(self.netze)
+
+        os.system(f"python Plot.py {self.filepath}")
 
     
