@@ -1,0 +1,11 @@
+# Tunneldorf
+Zeitraum:
+100 1
+
+Einfallspunkte:
+A 0 0 C 2
+C 0 2 A 5
+D 4 0 F 3
+F 4 2 D 2
+
+Kreuzungen:

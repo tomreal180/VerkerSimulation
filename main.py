@@ -1,6 +1,5 @@
 import sys
-from Interaktion import DataOut
-from ProgrammSteuerung import ProgrammSteuerung
+from Controller import ProgrammSteuerung
 
 '''
 Einstiegspunkt fuer das Programm
