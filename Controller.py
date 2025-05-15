@@ -45,16 +45,19 @@ class ProgrammSteuerung:
 
         
     def run(self):
-        for i in range(self.Datain.get_zeitraum()[0]):
-            self.netze.Simulieren(i)
-            if(i%self.Datain.get_zeitraum()[1] == 0):
-                self.Dataout.write_Process(self.netze,i)
+        try:
+            for i in range(self.Datain.get_zeitraum()[0]):
+                self.netze.Simulieren(i)
+                if(i%self.Datain.get_zeitraum()[1] == 0):
+                    self.Dataout.write_Process(self.netze,i)
+                
             
-        
-        self.Dataout.create_Statistik(self.netze)
+            self.Dataout.create_Statistik(self.netze)
 
-        os.system(f"python Plot.py {self.filepath}")
-
+            os.system(f"python Plot.py {self.filepath}")
+        except Exception as e:
+            self.Fehlerlog.schreiben_In_log_Datei(str(e))
+            self.beenden()
         self.Fehlerlog.schreiben_In_log_Datei(f"Die Simulation wurde erfolgreich ausgefuehrt. Das Ergebnis ist in Ordner {self.filepath} .")
         self.beenden()
     

@@ -1,10 +1,10 @@
 Gesamtanzahl Fahrzeuge pro 100m:
-A-->C: 213.0
+A-->C: 207.5
 C-->A: 35.5
-D-->F: 97.0
-F-->D: 218.5
+D-->F: 99.0
+F-->D: 209.5
 Maximale Anzahl Fahrzeuge pro 100m:
-A-->C: 6.0
+A-->C: 5.5
 C-->A: 2.5
 D-->F: 4.0
-F-->D: 6.5
+F-->D: 5.5
