@@ -5,18 +5,19 @@ from Model import Netze
 
 class ProgrammSteuerung:
     """
-    Klasse fuer die Programm-Steuerung, die die Daten aus der Interaktion entgegenimmt,
-    die Simulation durchgeführt und das Ergebnis an die Interaktion zurueckgibt, damit es
-    mit Hilfe von Interaktionen notwendige Daten und Simulation erstellen kann 
-
-     Attribute:
-        filepath (string): Adresse von path
-        Datain (DataIn): Input-Handler
-        Dataout (DataOut): Output-Handler
-        Fehlerlog (FehlerLog): .log Datei- Handler
-        netze (Netze): Verkehrsystem enthält alle Einfallspunkte und Kreuzungen
+    Diese Klasse für die Programm-Steuerung, die die Daten aus der Interaktion entgegennimmt, 
+    die Simulation durchführt und das Ergebnis an die Interaktion zurückgibt, 
+    kann mithilfe von Interaktionen notwendige Daten und Simulation erstellen. 
     """
     def __init__(self,datei : str, filepath : str):
+            """
+            Konstruktor initialisiert eine neue Instanz der ProgrammSteuerung-Klasse.
+
+            Args:
+            datei (str): Der Name der Datei, für die die Log-Datei und die Verwendung von Datain erstellt wird.
+                         Der Dateiname wird verwendet, um den Namen der Log-Datei zu generieren.
+            filepath (str): Der Pfad, in dem die Log-Datei, DataIn, DataOut gespeichert werden soll.
+            """
             self.filepath : str = filepath
             self.Fehlerlog : FehlerLog = FehlerLog(datei,filepath)
             try:
@@ -45,6 +46,11 @@ class ProgrammSteuerung:
 
         
     def run(self):
+        """
+        Methode startet die Simulation des Verkehrsnetzes.
+        Führt die Simulation über einen definierten Zeitraum aus und speichert Zwischenergebnisse
+        sowie finale Statistiken.
+        """
         try:
             for i in range(self.Datain.get_zeitraum()[0]):
                 self.netze.Simulieren(i)
@@ -62,17 +68,38 @@ class ProgrammSteuerung:
         self.beenden()
     
     def beenden(self):
+        """
+        Methode beendet das Programm und schreibt eine entsprechende Meldung in das Log.
+        """
         self.Fehlerlog.schreiben_In_log_Datei("Das Programm wurde beendet.")
         os._exit(0)
 
 class FehlerLog:
+    """
+    Diese Klasse verwaltet das Schreiben von Fehlermeldungen in eine Log-Datei.
+    """
     def __init__(self, datei : str, filepath : str):
+        """
+        Konstruktor initialisiert eine neue Instanz der FehlerLog-Klasse.
+
+        Args:
+            datei (str): Der Name der Datei, für die das Log erstellt wird.
+                         Der Dateiname wird verwendet, um den Namen der Log-Datei zu generieren.
+            filepath (str): Der Pfad, in dem die Log-Datei gespeichert werden soll.
+        """
         name = datei.split(".")[0]
         self.file :str = os.path.join(filepath,f"{name}.log")
 
     def schreiben_In_log_Datei(self, Message : str):
-            with open(self.file,"a") as f:
-                f.write(f"{Message}\n")
+        """
+        Methode schreibt eine Nachricht in die Log-Datei.
+        Jede Nachricht wird in einer neuen Zeile hinzugefügt.
+
+        Args:
+            Message (str): Die Fehlermeldung oder Information, die geloggt werden soll.
+        """
+        with open(self.file,"a") as f:
+            f.write(f"{Message}\n")
 
     
 

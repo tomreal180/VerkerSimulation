@@ -6,7 +6,18 @@ from Model import Kreuzung, Netze
 from Model import EinfallsPunkt
 
 class DataIn:
+    """
+    Diese Klasse ist verantwortlich für das Lesen und Parsen von Eingabedateien,
+    die Simulationsparameter, Einfallspunkte und Kreuzungsdaten enthalten.
+    """
     def __init__(self, datei : str, filepath : str):
+        """
+        Konstruktor initialisiert eine neue Instanz der DataIn-Klasse.
+
+        Args:
+            datei (str): Der Name der Eingabedatei.
+            filepath (str): Der Pfad, in dem die Eingabedatei liegt.
+        """
         self.Filepath :str = filepath
         self.Datei :str = os.path.join(self.Filepath, datei)
         self.titel: str = None
@@ -16,6 +27,11 @@ class DataIn:
         self.parse_file()
 
     def parse_file(self):
+        """
+        Methode parst die Eingabedatei Zeile für Zeile, um Simulationsdaten zu extrahieren.
+        Diese Methode liest den Titel, den Zeitraum, Einfallspunkte und Kreuzungen
+        und füllt die entsprechenden Klassenattribute.
+        """
         try:
             with open(self.Datei, 'r') as f:
                 # Titel
@@ -86,20 +102,55 @@ class DataIn:
             raise ValueError("Eingabedatei ist ungultig.")
 
     def get_zeitraum(self) -> List[int]:
+        """
+        Getter-Methode gibt den Simulationszeitraum zurück.
+
+        Returns:
+            List[int]: Eine Liste mit zwei Integern: [Gesamtdauer, Protokollierungsintervall].
+        """
         return self.zeitraum
 
     def get_einfallspunkte(self) -> List[EinfallsPunkt]:
+        """
+        Getter-Methode gibt die Liste der geparsten EinfallsPunkt-Objekte zurück.
+
+        Returns:
+            List[EinfallsPunkt]: Eine Liste von EinfallsPunkt-Objekten.
+        """
         return self.einfallspunkte
 
     def get_kreuzungen(self) -> List[Kreuzung]:
+        """
+        Getter-Methode gibt die Liste der geparsten Kreuzung-Objekte zurück.
+
+        Returns:
+            List[Kreuzung]: Eine Liste von Kreuzung-Objekten.
+        """
         return self.kreuzungen
 
 
 class DataOut:
+        """
+        Diese Klasse ist für das Schreiben der Simulationsergebnisse in verschiedene Ausgabedateien zuständig.
+        Dazu gehören ein Plan des Netzes, Statistiken über den Verkehr und detaillierte Prozessdaten der Fahrzeuge.
+        """
         def __init__(self, filepath : str):
+            """
+            Konstruktor initialisiert eine neue Instanz der DataOut-Klasse.
+
+            Args:
+                filepath (str): Der Pfad, in dem die Ausgabedateien gespeichert werden sollen.
+            """
             self.filepath : str = filepath
         
         def create_Plan(self,netze : Netze):
+            """
+            Methode erstellt eine Datei namens "Plan.txt", die die Geometriedaten aller Straßen des Netzes enthält.
+            Jede Straße wird durch ihre Start- und Endkoordinaten repräsentiert.
+
+            Args:
+            netze (Netze): Das Netze-Objekt, das alle Straßeninformationen enthält.
+            """
             file = os.path.join(self.filepath,"Plan.txt")
             Strassen = netze.get_alle_Strassen()
             with open(file, "w") as f:
@@ -110,6 +161,14 @@ class DataOut:
                         f.write(strasse.get_Point()+"\n")
         
         def create_Statistik(self, netze : Netze):
+            """
+            Methode erstellt eine Datei namens "Statistik.txt", die statistische Daten über das Verkehrsaufkommen
+            auf den einzelnen Straßen des Netzes enthält. Dies beinhaltet die Gesamtanzahl der Fahrzeuge pro 100m
+            und die maximale Anzahl der Fahrzeuge pro 100m.
+
+            Args:
+            netze (Netze): Das Netze-Objekt, das die statistischen Daten der Straßen enthält.
+            """
             file = os.path.join(self.filepath,"Statistik.txt")
             with open(file ,"w") as f:
                 Strassen = netze.get_alle_Strassen()
@@ -126,6 +185,15 @@ class DataOut:
                         f.write(f"{strasse}: {statistik[1]/statistik[2]}\n")
         
         def write_Process(self, netze: Netze, ZeitPunkt: int):
+            """
+            Methode schreibt die aktuellen Positionen aller Fahrzeuge zu einem bestimmten Zeitpunkt
+            in die Datei "Fahrzeuge.txt". Diese Methode wird während der Simulation
+            periodisch aufgerufen, um den Verlauf zu protokollieren.
+
+            Args:
+            netze (Netze): Das Netze-Objekt, das den aktuellen Zustand der Fahrzeuge enthält.
+            ZeitPunkt (int): Der aktuelle Zeitpunkt der Simulation.
+            """
             file = os.path.join(self.filepath,"Fahrzeuge.txt")
             with open(file, "a") as f:
                 Strassen = netze.get_alle_Strassen()
